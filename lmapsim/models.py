@@ -34,7 +34,7 @@ class Lmap(models.Model):
         return res
 
     def calculate_b(self, k2, ids, n1):
-        value = (int(ids, 2) | int(k2, 2)) & int(n1, 2)
+        value = (int(ids, 2) | int(k2, 2)) ^ int(n1, 2)
         res = format(value, '008b')
         return res
 
@@ -44,14 +44,14 @@ class Lmap(models.Model):
         return res
 
     def calculate_d(self, id_, ids, n1, n2):
-        value = ((int(ids, 2) & int(id_, 2)) ^ int(n1, 2)) ^ n2
+        value = ((int(ids, 2) & int(id_, 2)) ^ int(n1, 2)) ^ int(n2, 2)
         res = format(value, '008b')
         return res
 
     # write key updating methods
 
     def update_Ids(self, id_, ids, n2, k4):
-        value = (int(ids, 2) & (int(n2, 2) ^ int(k4, 2))) ^ id_
+        value = (int(ids, 2) & (int(n2, 2) ^ int(k4, 2))) ^ int(id_, 2)
         res = format(value, '008b')
         return res
 
@@ -72,5 +72,20 @@ class Lmap(models.Model):
 
     def update_k4(self, k4, n1, k2, id_):
         value = (int(k4, 2) ^ int(n1, 2)) & (int(k2, 2) ^ int(id_, 2))
+        res = format(value, '008b')
+        return res
+
+    def retrieve_n1(self, a, k1, ids):
+        value = (int(a, 2) ^ int(k1, 2)) ^ int(ids, 2)
+        res = format(value, '008b')
+        return res
+
+    def retrieve_n2(self, c, ids, k3):
+        value = (int(c, 2) ^ int(ids, 2)) ^ int(k3, 2)
+        res = format(value, '008b')
+        return res
+
+    def authenticate_b(self, ids, k2, b):
+        value = (int(ids, 2) ^ int(k2, 2)) ^ int(b, 2)
         res = format(value, '008b')
         return res
