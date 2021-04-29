@@ -7,3 +7,10 @@ from django.http import JsonResponse
 
 def home(request):
     return render(request, 'homepage.html')
+
+
+def lmap(request):
+    return render(request, 'lmapsim/lmapview.html')
+
+def sasi(request):
+    return render(request, 'sasisim/sasiview.html')

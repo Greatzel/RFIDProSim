@@ -1,5 +1,6 @@
 from django.db import models
-from operations import additionaloperations
+from django.core.exceptions import ValidationError
+from operations import bitfunctions
 
 
 # Create your models here.

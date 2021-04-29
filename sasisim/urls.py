@@ -3,7 +3,6 @@ from . import views
 from django.contrib import admin
 
 urlpatterns = [
-    path('test1/', views.index),
-    path('lmap/', views.lmap, name='lmap'),
     path('submit/', views.submit, name='submit'),
+    path('sasi/', views.sasi, name='sasi'),
 ]
