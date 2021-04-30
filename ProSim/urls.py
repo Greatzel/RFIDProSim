@@ -22,7 +22,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('lmapsim.urls'), name='lmap'),
     path('submit/', include('lmapsim.urls')),
-    path('submit/', include('sasisim.urls')),
+    path('submitsasi/', include('sasisim.urls')),
     path('', include('sasisim.urls'), name='sasi'),
-    path('', views.home),
+    path('', views.home, name='home'),
 ]

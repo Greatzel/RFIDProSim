@@ -12,5 +12,6 @@ def home(request):
 def lmap(request):
     return render(request, 'lmapsim/lmapview.html')
 
+
 def sasi(request):
     return render(request, 'sasisim/sasiview.html')

@@ -1,4 +1,5 @@
 from django.db import models
+from operations import bitfunctions
 
 
 # Create your models here.
@@ -44,7 +45,7 @@ class Sasi(models.Model):
         return res
 
     def update_Ids(self, id_, ids, n2, k1_up):
-        value = (int(ids, 2) & (int(id_, 2)) ^ (int(n2, 2))) ^ int(k1_up, 2)
+        value = (int(ids, 2) & int(id_, 2)) ^ (int(n2, 2) ^ int(k1_up, 2))
         res = format(value, '008b')
         return res
 
@@ -58,12 +59,17 @@ class Sasi(models.Model):
         res = format(value, '008b')
         return res
 
-    def update_k1(self, k1, n2, k3, id_):
-        value = (int(k1, 2) ^ int(n2, 2)) ^ (int(k3, 2) & int(id_, 2))
-        res = format(value, '008b')
-        return res
+    def update_k1(self, k1, n2):
+        res = int(k1, 2) ^ int(n2, 2)
+        value = format(res, '008b')
+        hw = bitfunctions.hemmingweight(k1)
+        rotl = bitfunctions.rotleft(value, hw)
+        return rotl
 
-    def update_k2(self, k2, n2, k4, id_):
-        value = (int(k2, 2) ^ int(n2, 2)) ^ (int(k4, 2) & int(id_, 2))
-        res = format(value, '008b')
-        return res
+    def update_k2(self, k2, n1):
+        res = int(k2, 2) ^ int(n1, 2)
+        value = format(res, '008b')
+        hw = bitfunctions.hemmingweight(k2)
+        rotl = bitfunctions.rotleft(value, hw)
+        return rotl
+

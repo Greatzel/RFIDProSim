@@ -79,7 +79,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">RFID Protocols Simulator</a>
+      <a class="navbar-brand" href="{% url 'home' %}">RFID Protocols Simulator</a>
     </div>
     <div class="collapse navbar-collapse" id="myNavbar">
       <!--<ul class="nav navbar-nav">
@@ -93,15 +93,15 @@
 <div class="container-fluid text-center">
   <div class="row content">
     <div class="col-sm-2 sidenav w3-bar-block w3-green" style="height: 890px"><br><br>
-      <p><a class="w3-bar-item w3-button" href="#">LMAP</a></p>
-      <p><a class="w3-bar-item w3-button" href="#">SASI</a></p>
+      <p><a class="w3-bar-item w3-button" href="{% url 'lmap' %}">LMAP</a></p>
+      <p><a class="w3-bar-item w3-button" href="{% url 'sasi' %}">SASI</a></p>
       <p><a class="w3-bar-item w3-button" href="#">UMAP</a></p>
       <p><a class="w3-bar-item w3-button" href="#">KMAP</a></p>
       <p><a class="w3-bar-item w3-button" href="#">Permutations</a></p>
       <p><a class="w3-bar-item w3-button" href="#">Recursive Hash</a></p>
     </div>
     <div class="col-sm-5 text-left">
-              <form method="POST" action="{% url 'submit' %}">
+              <form method="POST" action="{% url 'submitsasi' %}">
                   {% csrf_token %}
           <div class="form-group ">
           <br><br>
@@ -109,29 +109,23 @@
             <label for="exampleInputEmail1">Enter 8 bit Values</label><br><br>
 
               <label>ID:</label>
-            <input type="text" class="form-control" id="lmapId" name="lmapId" placeholder="Enter LMAP id value">
+            <input type="text" class="form-control" id="sasiId" name="sasiId" placeholder="Enter SASI id value">
            <!-- <small id="id_lmap" class="form-text text-muted">Enter 16 bits value</small>-->
 
               <label>IDS:</label>
-            <input type="text" class="form-control" id="lmapIds" name="lmapIds" placeholder="Enter LMAP ids value">
+            <input type="text" class="form-control" id="sasiIds" name="sasiIds" placeholder="Enter SASI ids value">
 
               <label>K1:</label>
-            <input type="text" class="form-control" id="lmapK1" name="lmapK1" placeholder="Enter LMAP k1 value">
+            <input type="text" class="form-control" id="sasiK1" name="sasiK1" placeholder="Enter SASI k1 value">
 
               <label>K2:</label>
-            <input type="text" class="form-control" id="lmapK2" name="lmapK2" placeholder="Enter LMAP k2 value">
-
-              <label>K3:</label>
-            <input type="text" class="form-control" id="lmapK3" name="lmapK3" placeholder="Enter LMAP k3 value">
-
-              <label>K4:</label>
-            <input type="text" class="form-control" id="lmapK4" name="lmapK4" placeholder="Enter LMAP k4 value">
+            <input type="text" class="form-control" id="sasiK2" name="sasiK2" placeholder="Enter SASI k2 value">
 
               <label>n1:</label>
-            <input type="text" class="form-control" id="lmapN1" name="lmapN1" placeholder="Enter LMAP n1 value">
+            <input type="text" class="form-control" id="sasiN1" name="sasiN1" placeholder="Enter SASI n1 value">
 
               <label>n2:</label>
-            <input type="text" class="form-control" id="lmapN2" name="lmapN2" placeholder="Enter LMAP n2 value">
+            <input type="text" class="form-control" id="sasiN2" name="sasiN2" placeholder="Enter SASI n2 value">
           </div>
 
           <button type="submit" class="btn btn-primary">Submit</button>
@@ -166,65 +160,88 @@
                             <div class="equations">
                                 <strong>A = (IDS xor K1) xor N1</strong><br>
                                 IDS = {{ IDS_old }} <br>
-                                K1_ = {{ K1 }} <br>
-                                N1_ = {{ N1 }} <br>
+                                K1_ = {{ K1 }}<br>
+                                --------------------- <br>
+                                IDS xor K1 = {{ ids_xor_k1 }} <br>
+                                N1_ = {{ N1 }}<br>
                                 --------------------- <br>
                                 A__ = {{ A }}
                             </div><br>
                             <div class="equations">
-                                <strong>B = (IDS or K2) xor N1</strong><br>
+                                <strong>B = (IDS or K2) and N2</strong><br>
                                 IDS = {{ IDS_old }} <br>
-                                K2_ = {{ K2 }} <br>
-                                N1_ = {{ N1 }} <br>
+                                K2 =  {{ K2 }}<br>
+                                --------------------- <br>
+                                IDS or K2 = {{ ids_or_k2 }}<br>
+                                N2 =  {{ N2 }}<br>
                                 --------------------- <br>
                                 B__ = {{ B }}
                             </div><br>
-                            <div class="equations">
-                                <strong>C = (IDS and K2) and N2</strong><br>
-                                IDS = {{ IDS_old }} <br>
-                                K2_ = {{ K2 }} <br>
-                                N2_ = {{ N2 }} <br>
-                                --------------------- <br>
-                                C__ = {{ C }}
-                            </div><br>
+
                             <li>TAG retrieves <strong>n1 and n2</strong> from messages <strong>A, B, and C </strong>,
                                  while B is used for authentication.</li>
                             <div class="equations">
                                 <strong>N1 = (A xor K1) xor IDS</strong><br>
-                                A__ = {{ A }} <br>
-                                K1_ = {{ K1 }} <br>
-                                IDS = {{ IDS_old }} <br>
+                                A__ =  <br>
+                                K1_ =  <br>
+                                IDS =  <br>
                                 --------------------- <br>
-                                N1_ = {{ N1 }}
+                                N1_ =  {{ N1 }}
                             </div><br>
 
                             <div class="equations">
                                 <strong>N2 = (C xor IDS) xor K3</strong><br>
-                                C__ = {{ C }} <br>
-                                IDS_ = {{ IDS_old }} <br>
-                                K3 = {{ K3 }} <br>
+                                C__ =  <br>
+                                IDS_ = <br>
+                                K3 =  <br>
                                 --------------------- <br>
                                 N2_ = {{ N2 }}
                             </div><br>
 
-                            <div class="equations">
-                                <strong>N1 = (IDS or K2) xor B</strong><br>
-                                IDS = {{ IDS_old }} <br>
-                                K2_ = {{ K1 }} <br>
-                                B__ = {{ B }} <br>
+                             <div class="equations">
+                                <strong>K1<sub>(n+1)</sub> = Rot(K1 xor N2, hw(K1))</strong><br>
+                                K1 = {{ K1 }}<br>
+                                N2 =  {{ K2 }}<br>
                                 --------------------- <br>
-                                N1_ = {{ N1 }}
+                                 K1 xor N2 =  {{ k1_xor_n2 }}<br>
+                                 Rot({{ k1_xor_n2 }}, hw(K1))<br>
+                                --------------------- <br>
+                                K1<sub>(n+1)</sub> = {{ K1_new }}
+                            </div><br>
+                            <div class="equations">
+                                <strong>K2<sub>(n+1)</sub> = Rot(K2 xor N1, hw(K2))</strong><br>
+                                K2 = {{ K2 }}<br>
+                                N1 = {{ N1 }}<br>
+                                --------------------- <br>
+                                K2 xor N1 = {{ k2_xor_n1 }} <br>
+                                Rot({{ k2_xor_n1 }}, hw(K2)) <br>
+                                --------------------- <br>
+                                K2<sub>(n+1)</sub> = {{ K2_new }}
+                            </div><br>
+                            <div class="equations">
+                                <strong>C = (K1 xor K2<sub>n + 1</sub>) and (K1<sub>n + 1</sub> xor K2)</strong><br>
+                                K1 = {{ K1 }} <br>
+                                K2 = {{ K2 }} <br>
+                                --------------------- <br>
+                                K1 xor K2<sub>n + 1</sub> = {{ k1_xor_k2up }}<br>
+                                --------------------- <br>
+                                C  = {{ C }} <br>
                             </div><br>
 
                             <li>After TAG has authenticated READER, TAG will send message <strong>D</strong></li>
                                 <div class="equations">
-                                    <strong>D = ((IDS and ID) xor N1) xor N2</strong><br>
-                                    IDS = {{ IDS_old }} <br>
-                                    ID_ = {{ ID }} <br>
-                                    N1_ = {{ N1 }} <br>
-                                    N2_ = {{ N2 }} <br>
+                                    <strong>D = (K2<sub>n + 1</sub> & ID) xor ((K1 xor K2) xor K1<sub>n + 1</sub>)</strong><br>
+                                    K2<sub>n + 1</sub> = {{ K2_new }}<br>
+                                    ID = {{ IDS_old }}<br>
                                     --------------------- <br>
-                                    D__ = {{ D }}
+                                    K2<sub>n + 1</sub> & ID = {{ k2up_and_id }} <br>
+                                    --------------------- <br>
+                                    K1 = {{ K1 }}<br>
+                                    K2 = {{ K2 }}<br>
+                                    --------------------- <br>
+                                    K1 xor K2 = {{ k1_xor_k2 }} xor K1 {{ K1 }}<br>
+                                    --------------------- <br>
+                                    D = {{ D }}
                                 </div><br>
 
                                 <!--<div class="w3-panel w3-pale-green w3-border">
@@ -244,50 +261,19 @@
                         <ol>
                             <li>READER will send messages <strong>A, B, and C</strong> to TAG</li>
                             <div class="equations">
-                                <strong>IDS<sub>(n+1)</sub> = (IDS and ( N2 xor K4)) xor ID</strong><br>
-                                N2_ = {{ N2 }} <br>
-                                K4_ = {{ K4 }} <br>
-                                IDS<sub>old</sub> = {{ IDS_old }} <br>
-                                ID_ = {{ ID }} <br>
+                                <strong>IDS<sub>(n+1)</sub> = (IDS and ID) xor (N2 xor K1<sub>n + 1</sub>)</strong><br>
+                                IDS and ID = {{ ids_and_id }}<br>
+                                N2 xor K1 =  {{ n2_xor_k1 }}<br>
                                 --------------------- <br>
-                                IDS<sub>new</sub> = {{ IDS_new }}
+                                IDS<sub>new</sub> = {{ IDS_new }}<br>
+                                IDS<sub>old</sub> = {{ IDS_old }}<br>
                             </div><br>
                             <div class="equations">
                                 <strong>K1<sub>(n+1)</sub> = K1 xor N2 xor (K3 and ID)</strong><br>
-                                K3_ = {{ K3 }} <br>
-                                ID = {{ ID }} <br>
-                                K1_ = {{ K1 }} <br>
-                                N2_ = {{ N1 }} <br>
-                                --------------------- <br>
-                                K1<sub>(n+1)</sub> = {{ K1_new }}
-                            </div><br>
-                            <div class="equations">
-                                <strong>K2<sub>(n+1)</sub> = K2 and N2 xor (K4 and ID)</strong><br>
-                                K4 = {{ K4 }} <br>
-                                ID_ = {{ ID }} <br>
-                                N2_ = {{ N2 }} <br>
-                                K2_ = {{ K2 }} <br>
-                                --------------------- <br>
-                                K2<sub>(n+1)</sub> = {{ K2_new }}
-                            </div><br>
-                            <div class="equations">
-                                <strong>K3<sub>(n+1)</sub> = (K3 xor N1) and (K1 xor ID)</strong><br>
-                                K3_ = {{ K3 }}
-                                N1_ = {{ N1 }} <br>
-                                K1_ = {{ K1 }} <br>
-                                ID_ = {{ ID }} <br>
-                                --------------------- <br>
-                                K3<sub>(n+1)</sub> = {{ K3_new }}
-                            </div><br>
-
-                            <div class="equations">
-                                <strong>K4<sub>(n+1)</sub> = (K4 xor N1) xor (K3 xor ID)</strong><br>
-                                K4_ = {{ K4 }}
-                                N1_ = {{ N1 }} <br>
-                                K3_ = {{ K3 }} <br>
-                                ID_ = {{ ID }} <br>
-                                --------------------- <br>
-                                K4<sub>(n+1)</sub> = {{ K4_new }}
+                                K1<sub>old</sub> =  {{ K1 }}<br>
+                                K1<sub>new</sub> =  {{ K1_new }}<br>
+                                K2<sub>old</sub> =  {{ K2 }}<br>
+                                K2<sub>new</sub> =  {{ K2_new }}<br>
                             </div><br>
                         </ol>
                   </div>

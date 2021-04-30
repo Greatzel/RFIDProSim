@@ -11,6 +11,10 @@ def index(request):
     return HttpResponse('Test 1')
 
 
+def home(request):
+    return render(request, 'homepage.html')
+
+
 def lmap(request):
     return render(request, 'lmapsim/lmapview.html')
 
