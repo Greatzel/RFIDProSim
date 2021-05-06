@@ -5,7 +5,8 @@ from operations import bitfunctions
 # Create your models here.
 
 class Sasi(models.Model):
-    id_val = models.BinaryField(max_length=16)
+    max = 16
+    id_val = models.BinaryField(max)
     ids_val = models.BinaryField(max_length=16)
     k1_val = models.BinaryField(max_length=16)
     k2_val = models.BinaryField(max_length=16)
@@ -59,17 +60,18 @@ class Sasi(models.Model):
         res = format(value, '008b')
         return res
 
-    def update_k1(self, k1, n2):
-        res = int(k1, 2) ^ int(n2, 2)
-        value = format(res, '008b')
-        hw = bitfunctions.hemmingweight(k1)
-        rotl = bitfunctions.rotleft(value, hw)
-        return rotl
+    # rcia k1 update
+    def update_k1(self, k2, n1, k1, r):
+        seedval = bitfunctions.seed(bitfunctions.hemmingweight(r))
+        rhk2 = bitfunctions.recursivehash(k2, r)
+        rhn1 = bitfunctions.recursivehash(n1, r)
+        rotrhk2n1 = bitfunctions.rotleft2(rhk2, bitfunctions.hemmingweight(rhn1))
+        return bitfunctions.andbin(rotrhk2n1, k1)
 
-    def update_k2(self, k2, n1):
+    def update_k(self, k2, n1):
         res = int(k2, 2) ^ int(n1, 2)
         value = format(res, '008b')
         hw = bitfunctions.hemmingweight(k2)
-        rotl = bitfunctions.rotleft(value, hw)
+        rotl = bitfunctions.rotleft2(value, hw)
         return rotl
 

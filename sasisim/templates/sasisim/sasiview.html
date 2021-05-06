@@ -95,18 +95,24 @@
     <div class="col-sm-2 sidenav w3-bar-block w3-green" style="height: 890px"><br><br>
       <p><a class="w3-bar-item w3-button" href="{% url 'lmap' %}">LMAP</a></p>
       <p><a class="w3-bar-item w3-button" href="{% url 'sasi' %}">SASI</a></p>
-      <p><a class="w3-bar-item w3-button" href="#">UMAP</a></p>
-      <p><a class="w3-bar-item w3-button" href="#">KMAP</a></p>
+      <p><a class="w3-bar-item w3-button" href="{% url 'rcia' %}">RCIA</a></p>
       <p><a class="w3-bar-item w3-button" href="#">Permutations</a></p>
-      <p><a class="w3-bar-item w3-button" href="#">Recursive Hash</a></p>
     </div>
     <div class="col-sm-5 text-left">
-              <form method="POST" action="{% url 'submitsasi' %}">
+              <form method="POST" action="{% url 'sasi' %}">
                   {% csrf_token %}
           <div class="form-group ">
           <br><br>
               <header>SASI</header>
             <label for="exampleInputEmail1">Enter 8 bit Values</label><br><br>
+
+              {% if messages %}
+                  {% for message in messages %}
+                    <div class="w3-panel w3-red">
+                      <p>{{ message }}</p>
+                    </div>
+                  {% endfor %}
+              {% endif %}
 
               <label>ID:</label>
             <input type="text" class="form-control" id="sasiId" name="sasiId" placeholder="Enter SASI id value">

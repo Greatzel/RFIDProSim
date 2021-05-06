@@ -15,3 +15,7 @@ def lmap(request):
 
 def sasi(request):
     return render(request, 'sasisim/sasiview.html')
+
+
+def rcia(request):
+    return render(request, 'rciasim/rciaview.html')

@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'lmapsim.apps.LmapsimConfig',
     'sasisim.apps.SasisimConfig',
+    'rciasim.apps.RciasimConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

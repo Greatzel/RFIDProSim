@@ -21,8 +21,10 @@ from django.conf.urls import url
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('lmapsim.urls'), name='lmap'),
-    path('submit/', include('lmapsim.urls')),
-    path('submitsasi/', include('sasisim.urls')),
+    # path('submit/', include('lmapsim.urls')),
+    # path('submitsasi/', include('sasisim.urls')),
+    # path('submitrcia/', include('rciasim.urls')),
     path('', include('sasisim.urls'), name='sasi'),
+    path('', include('rciasim.urls'), name='rcia'),
     path('', views.home, name='home'),
 ]
