@@ -10,7 +10,7 @@ from django.http import HttpResponse
 
 # Create your views here.
 
-def sasi(request):
+def sasisubmit(request):
     if request.POST:
         id_val = request.POST.get("sasiId")
         ids = request.POST.get("sasiIds")
@@ -19,10 +19,9 @@ def sasi(request):
         n1 = request.POST.get("sasiN1")
         n2 = request.POST.get("sasiN2")
 
-        print("Hewooo")
-        if not isValid.is_valid_rcia(id_val, ids, k1, k2, n1, n2):
+        if not isValid.is_valid_sasi(id_val, ids, k1, k2, n1, n2):
             messages.error(request, 'Error! Please enter 8 to 16 bits!')
-            return redirect(sasisim.views.sasi)
+            return redirect(sasisim.views.sasisubmit)
         else:
             obj = Sasi(id_val, ids, k1, k2, n1, n2)
             a = obj.calculate_a(ids, k1, n1)
@@ -74,3 +73,7 @@ def lmap(request):
 
 def rcia(request):
     return render(request, 'rciasim/rciaview.html')
+
+
+def sasi(request):
+    return render(request, 'sasisim/sasiview.html')

@@ -12,7 +12,7 @@ from .models import PostForm
 from rciasim.models import Rcia
 
 
-def rcia(request):
+def rciasubmit(request):
     if request.POST:
         id_val = request.POST.get("rciaId")
         ids = request.POST.get("rciaIds")
@@ -78,33 +78,5 @@ def sasi(request):
     return render(request, 'sasisim/sasiview.html')
 
 
-# def submitrcia(request):
-    # id_val = request.POST.get("rciaId")
-    # ids = request.POST.get("rciaIds")
-    # k1 = request.POST.get("rciaK1")
-    # k2 = request.POST.get("rciaK2")
-    # n1 = request.POST.get("rciaN1")
-    # n2 = request.POST.get("rciaN2")
-
-    # test = 1
-
-    # print("obj len: ", len(id_val))
-    # if not isValid.is_valid_rcia(id_val, ids, k1, k2, n1, n2):
-      #  error_message = "Enter 16 bit value"
-       # return HttpResponse("help")
-   # else:
-
-      #  obj = Rcia(id_val, ids, k1, k2, n1, n2)
-
-       # seed = obj.seed(bitfunctions.xorbin(n1, n2))
-       # a = obj.calculate_a(ids, k1, n1)
-       # b = obj.calculate_b(ids, n1, k2, k1)
-       # k1_up = obj.update_k(k2, n1, k1, seed)
-       # k2_up = obj.update_k(k1, n2, k2, seed)
-       # c = obj.calculate_c(k1_up, k2_up, n1, n2, seed)
-       # d = obj.calculate_d(id_val, k1_up, k2_up, n2, ids, seed)
-       # ids_up = obj.update_Ids(ids, n2, n1, seed)
-       # print("else: ", type(id_val))
-
-
-       # return render(request, 'rciasim/rciaview.html', json_result)
+def rcia(request):
+    return render(request, 'rciasim/rciaview.html')
