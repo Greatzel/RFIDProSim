@@ -20,7 +20,7 @@ def sasisubmit(request):
         n2 = request.POST.get("sasiN2")
 
         if not isValid.is_valid_sasi(id_val, ids, k1, k2, n1, n2):
-            messages.error(request, 'Error! Please enter 8 to 16 bits!')
+            messages.error(request, 'Error! Please enter 8-16 bit binary values in all fields!')
             return redirect(sasisim.views.sasisubmit)
         else:
             obj = Sasi(id_val, ids, k1, k2, n1, n2)

@@ -29,7 +29,7 @@ def lmap(request):
         n2 = request.POST.get("lmapN2")
 
         if not isValid.is_valid_lmap(id_val, ids, k1, k2, k3, k4, n1, n2):
-            messages.error(request, 'Error! Please enter 16 bit binary values in all fields!')
+            messages.error(request, 'Error! Please enter 8-16 bit binary values in all fields!')
             return render(request, 'lmapsim/lmapview.html')
         else:
             obj = Lmap(id_val, ids, k1, k2, k3, k4, n1, n2)

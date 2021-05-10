@@ -92,7 +92,8 @@ class Rcia(models.Model):
     # bin1 is the hw of R
     # K is 4 always! refer to paper
     def seed(self, bin1):
-        res = bitfunctions.hemmingweight(int(bin1, 2)) % 4
+        res = bitfunctions.hemmingweight(bin1) % 4
+        print("HW value check: ", bitfunctions.hemmingweight(bin1))
         return res
 
 

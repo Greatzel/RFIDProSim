@@ -142,17 +142,17 @@
             <div class="result ex1">
                 <br><label>Results: </label><br><br><br>
                   <div class="w3-panel w3-leftbar w3-border-orange w3-text-orange">
-                      <h4><strong>Tag Identification Phase</strong></h4><br>
+                    <h4><strong>Tag Identification Phase</strong></h4><br>
                         <ol>
                             <li>READER will broadcast "hello" message to TAG</li>
-                            <li>TAG will respond with current IDS to READER</li>
+                            <li>TAG will respond with potential next IDS to READER</li>
                             <li>READER will find a match in the backend SERVER</li>
                                 <div class="w3-panel w3-pale-green w3-border">
                                   <p>If match is found then we will move to the Mutual Authentication Phase
                                   where READER will send messages <strong>A, B, and C</strong></p>
                                 </div>
                                 <div class="w3-panel w3-pale-yellow w3-border">
-                                  <p>If match is not found, session is dropped and READER will scan again</p>
+                                  <p>If match is not found, READER will probe again and TAG will respond with its old IDS</p>
                                 </div>
                         </ol>
                       <h4>READER------------------------->TAG</h4>

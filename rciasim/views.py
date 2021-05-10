@@ -36,8 +36,31 @@ def rciasubmit(request):
             c = obj.calculate_c(k1_up, k2_up, n1, n2, seed)
             d = obj.calculate_d(id_val, k1_up, k2_up, n2, ids, seed)
             ids_up = obj.update_Ids(ids, n2, n1, seed)
+            rhk1up = bitfunctions.recursivehash(k1_up, seed)
+            rhk2up = bitfunctions.recursivehash(k2_up, seed)
+            rhn1 = bitfunctions.recursivehash(n1, seed)
+            rhn2 = bitfunctions.recursivehash(n2, seed)
+            rotrhnarhn2 = bitfunctions.rotleft2(rhn1, bitfunctions.hemmingweight(rhn2))
+            # rot of ids and k1
+            rotidsk1 = bitfunctions.rotleft2(ids, bitfunctions.hemmingweight(k1))
+            # and of ids and n1
+            idsandn1 = bitfunctions.andbin(ids, n1)
+            k1xorn2 = bitfunctions.xorbin(k1, n2)
+            k2xorn1 = bitfunctions.xorbin(k2, n1)
+            # rotation of the result of ids and n1 by the hemming weight of n1
+            rotidsn1k2 = bitfunctions.rotleft2(idsandn1, bitfunctions.hemmingweight(n1))
+            # this is too long but this is the D calculation in RCIA good luck future me
+            rotidsn1k2andk1 = bitfunctions.andbin(bitfunctions.rotleft2(bitfunctions.andbin(ids, n1), bitfunctions.hemmingweight(k2)), k1)
+            # if you're looking at this and you dont know what's going on, I am sorry it's my fault this is D calc
+            rotrhidshwk1up = bitfunctions.rotleft2(bitfunctions.recursivehash(id_val, seed), bitfunctions.hemmingweight(k1_up))
+            # D calculation once again
+            rotrhk2uphwrhn2 = bitfunctions.rotleft2(bitfunctions.recursivehash(k2_up, seed), bitfunctions.hemmingweight(bitfunctions.recursivehash(n2, seed)))
+            # 2nd to the final calculation to attain D value
+            dandval = bitfunctions.andbin(rotrhidshwk1up, rotrhk2uphwrhn2)
+
             print("type of A: ", type(a))
             json_result = {
+                'seed': seed,
                 'A': a,
                 'B': b,
                 'C': c,
@@ -51,15 +74,23 @@ def rciasubmit(request):
                 'IDS_new': ids_up,
                 'IDS_old': ids,
                 'ID': id_val,
-                # 'ids_xor_k1': ids_xor_k1,
-                # 'ids_or_k2': ids_or_k2,
-                # 'k1_xor_n2': bitfunctions.xorbin(k1, n2),
-                # 'k2_xor_n1': bitfunctions.xorbin(k2, n1),
-                # 'k1_xor_k2up': bitfunctions.xorbin(k1, k2_up),
-                # 'k1_xor_k2': bitfunctions.xorbin(k1, k2),
-                # 'k2up_and_id': bitfunctions.andbin(k2_up, id_val),
-                # 'ids_and_id': bitfunctions.andbin(ids, id_val),
-                # 'n2_xor_k1': bitfunctions.xorbin(n2, k1_up)
+                'rotidsk1': rotidsk1,
+                'idsandn1': idsandn1,
+                'rotidsn1k2': rotidsn1k2,
+                'hwk1': bitfunctions.hemmingweight(k1),
+                'hwk2': bitfunctions.hemmingweight(k2),
+                'R': bitfunctions.xorbin(n1, n2),
+                'rhk1up': rhk1up,
+                'rhk2up':rhk2up,
+                'hwr': bitfunctions.hemmingweight(bitfunctions.xorbin(n1, n2)),
+                'rhn1': rhn1,
+                'rhn2': rhn2,
+                'rotidsn1k2andk1': rotidsn1k2andk1,
+                'rotrhk2uphwrhn2': rotrhk2uphwrhn2,
+                'dandval': dandval,
+                'rotrhnarhn2': rotrhnarhn2,
+                'k1xorn2': k1xorn2,
+                'k2xorn1': k2xorn1,
             }
             return render(request, 'rciasim/rciaview.html', json_result)
     else:

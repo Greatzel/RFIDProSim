@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -140,19 +141,35 @@
 
         <div class="col-sm-5 sidenav">
             <div class="result ex1">
+
                 <br><label>Results: </label><br><br><br>
+                 <div class="w3-panel w3-card w3-green">
+                     <h3>Legend</h3>
+                     <ul style="list-style-type: none">
+                         <li>Hw = Hemming Weight</li>
+                         <li>Rh = Recursive Hash</li>
+                         <li>Rot = Bitwise Left Rotation/Left Shift</li>
+                     </ul>
+                 </div>
                   <div class="w3-panel w3-leftbar w3-border-orange w3-text-orange">
                       <h4><strong>Tag Identification Phase</strong></h4><br>
                         <ol>
                             <li>READER will broadcast "hello" message to TAG</li>
-                            <li>TAG will respond with current IDS to READER</li>
+                            <li>TAG will respond with potential next IDS to READER</li>
                             <li>READER will find a match in the backend SERVER</li>
                                 <div class="w3-panel w3-pale-green w3-border">
                                   <p>If match is found then we will move to the Mutual Authentication Phase
-                                  where READER will send messages <strong>A, B, and C</strong></p>
+                                  where READER will send messages <strong>A, B, and C</strong>. The READER will also
+                                  generate <strong>N1 and N2</strong> used to generate <strong>R</strong> value to
+                                  calculate the <strong>seed</strong>.</p>
                                 </div>
                                 <div class="w3-panel w3-pale-yellow w3-border">
-                                  <p>If match is not found, session is dropped and READER will scan again</p>
+                                  <p>If match is not found, READER will probe again and TAG will respond with its old IDS</p>
+                                </div>
+                                <div class="w3-panel w3-pale-blue w3-border">
+                                <p> If the READER receives old <strong>IDS</strong>
+                                  then <strong>K1<sub>old</sub> and K2<sub>old</sub></strong> will be used. Otherwise,
+                                use <strong>K1<sub>new</sub> and K2<sub>new</sub></strong> </p>
                                 </div>
                         </ol>
                       <h4>READER------------------------->TAG</h4>
@@ -164,99 +181,130 @@
                         <ol>
                             <li>READER will send messages <strong>A, B, and C</strong> to TAG</li>
                             <div class="equations">
-                                <strong>A = (IDS xor K1) xor N1</strong><br>
-                                IDS = {{ IDS_old }} <br>
-                                K1_ = {{ K1 }}<br>
+                                <strong>A = Rot(IDS,Hw(K1)) xor N1</strong><br>
+                                Hw(K1) = {{ hwk1 }}<br>
+                                Rot(IDS, {{ hwk1 }}) <br>
+                                ____________________ <br>
+                                = {{ rotidsk1 }} <br>
                                 --------------------- <br>
-                                IDS xor K1 = {{ ids_xor_k1 }} <br>
-                                N1_ = {{ N1 }}<br>
+                                xor N1 = {{ rotidsn1k2 }} <br>
                                 --------------------- <br>
                                 A__ = {{ A }}
                             </div><br>
                             <div class="equations">
-                                <strong>B = (IDS or K2) and N2</strong><br>
-                                IDS = {{ IDS_old }} <br>
-                                K2 =  {{ K2 }}<br>
-                                --------------------- <br>
-                                IDS or K2 = {{ ids_or_k2 }}<br>
-                                N2 =  {{ N2 }}<br>
+                                <strong>B = Rot((IDS and N1), Hw(k2)) and N2</strong><br>
+                                IDS and N1 = {{ idsandn1 }} <br>
+                                Hw(K2) = {{ hwk2 }}<br>
+                                Rot with Hw(K2) =  {{ rotidsn1k2 }}<br>
+                                xor with N2 = {{ N2 }}<br>
                                 --------------------- <br>
                                 B__ = {{ B }}
                             </div><br>
 
-                            <li>TAG retrieves <strong>n1 and n2</strong> from messages <strong>A, B, and C </strong>,
-                                 while B is used for authentication.</li>
+                            <li>READER will calculate <strong>R</strong> value and seed with <strong>N1 and N2.</strong></li>
                             <div class="equations">
-                                <strong>N1 = (A xor K1) xor IDS</strong><br>
-                                A__ =  <br>
-                                K1_ =  <br>
-                                IDS =  <br>
+                                <strong>R = N1 xor N2</strong><br>
+                                N1 = {{ N1 }} <br>
+                                N2 =  {{ N2 }}<br>
                                 --------------------- <br>
-                                N1_ =  {{ N1 }}
+                                R =  {{ R }}
                             </div><br>
 
                             <div class="equations">
-                                <strong>N2 = (C xor IDS) xor K3</strong><br>
-                                C__ =  <br>
-                                IDS_ = <br>
-                                K3 =  <br>
+                                <strong>seed = Hw(R) mod K</strong><br>
+                                <mark>Since 16 bit size values are enforced in this app, K will always be equal to 4.
+                                Otherwise, K is equal to the blocks containing an equal number of bit values.</mark><br>
+                                Hw(R) = {{ hwr }} <br>
+                                K =  4<br>
                                 --------------------- <br>
-                                N2_ = {{ N2 }}
+                                seed =  {{ seed }}
                             </div><br>
 
-                             <div class="equations">
-                                <strong>K1<sub>(n+1)</sub> = Rot(K1 xor N2, hw(K1))</strong><br>
-                                K1 = <br>
-                                N2 = <br>
+                            <div class="w3-card-4" style="width:100%;">
+                                <header class="w3-container w3-green">
+                                  <h3>Recursive Hash Calculation</h3>
+                                </header>
+
+                                <div class="w3-container">
+                                  <p><img src="{% static 'rciasim/images/RecursiveHash.png' %}" style="width:100%;"></p>
+                                </div>
+
+                                <footer class="w3-container w3-green">
+                                  <h5>For details view source:</h5>
+                                    <a href="https://journals.sagepub.com/doi/10.1155/2015/642180">
+                                        RCIA: A New Ultralightweight RFID Authentication Protocol Using Recursive Hash
+                                    by Umar Mujahid, M. Najam-ul-Islam, and M. Ali Shami</a>
+                                </footer>
+                              </div><br>
+
+                            <div class="equations">
+                                <strong>K1<sub>(n+1)</sub> = Rot()</strong><br>
+                                K1 = {{ K1 }} <br>
+                                N2 = {{ N2 }}<br>
                                 --------------------- <br>
-                                 K1 xor N2 =  <br>
+                                 K1 xor N2 =  {{ k1xorn2 }}<br>
                                  Rot(, hw(K1))<br>
                                 --------------------- <br>
-                                K1<sub>(n+1)</sub> =
+                                K1<sub>(n+1)</sub> = {{ K1_new }}
                             </div><br>
                             <div class="equations">
-                                <strong>K2<sub>(n+1)</sub> = Rot(K2 xor N1, hw(K2))</strong><br>
-                                K2 = <br>
-                                N1 = <br>
+                                <strong>K2<sub>(n+1)</sub> = Rot(K2 xor N1, Hw(K2))</strong><br>
+                                K2 = {{ K2 }}<br>
+                                N1 = {{ N1 }}<br>
                                 --------------------- <br>
-                                K2 xor N1 = <br>
+                                K2 xor N1 = {{ k2xorn1 }} <br>
                                 Rot(, hw(K2)) <br>
                                 --------------------- <br>
-                                K2<sub>(n+1)</sub> =
-                            </div><br>
-                            <div class="equations">
-                                <strong>C = (K1 xor K2<sub>n + 1</sub>) and (K1<sub>n + 1</sub> xor K2)</strong><br>
-                                K1 = {{ K1 }} <br>
-                                K2 = {{ K2 }} <br>
-                                --------------------- <br>
-                                K1 xor K2<sub>n + 1</sub> = <br>
-                                --------------------- <br>
-                                C  =  {{ C }}<br>
+                                K2<sub>(n+1)</sub> = {{ K2_new }}
                             </div><br>
 
-                            <li>After TAG has authenticated READER, TAG will send message <strong>D</strong></li>
+                            <div class="equations">
+                                <p><strong>C</strong> is calculated by READER and when TAG receives READER's C,
+                                the TAG will calculate their own local C value and compare it with received C value
+                                to authenticate the READER.</p><br>
+                                <strong>C = Rot(Rh(K<sub>1</sub>*), Rh(K<sub>2</sub>*))
+                                    and Rot(Rh(N1), Rh(N2))</strong><br>
+                                Rh(K<sub>1</sub>*) = {{ rhk1up }} <br>
+                                Rh(N<sub>2</sub>*) = {{ rhk2up }}<br>
+                                Rot(Rh(K<sub>2</sub>*), Rh(N<sub>2</sub>*)= <br>
+                                Rh(n1) = {{ rhn1 }} <br>
+                                Rh(n2) = {{ rhn2 }}<br>
+                                Rot(Rh(n1), Rh(n2)) = {{ rotrhnarhn2 }}<br>
+                                --------------------- <br>
+                                C = {{ C }}
+                            </div><br>
+
+                            <li>TAG retrieves <strong>n1 and n2</strong> from messages <strong>A and B</strong>.</li>
+                            <div class="equations">
+                                <strong>N1 = (A xor Rot(IDS,Hw(K1)))</strong><br>
+                                A = {{ A }} <br>
+                                Rot(IDS,Hw(K1)) =  {{ rotidsk1 }}<br>
+                                --------------------- <br>
+                                N1 =  {{ N1 }}
+                            </div><br>
+
+                            <div class="equations">
+                                <strong>N2 = B xor Rot(IDS and N1, Hw(K2)) and K1</strong><br>
+                                B = {{ B }} <br>
+                                Rot(IDS and N1, Hw(K2)) and K1 = {{ rotidsn1k2andk1 }} <br>
+                                --------------------- <br>
+                                N2 = {{ N2 }}
+                            </div><br>
+
+                            <li>TAG will calculate local value of C and compare it to received C from the READER.
+                                If there is match then TAG has authenticated READER and will send message <strong>D</strong>,
+                            as well as update <strong>IDS, K1 and K2</strong>.</li>
                                 <div class="equations">
-                                    <strong>D = (K2<sub>n + 1</sub> & ID) xor ((K1 xor K2) xor K1<sub>n + 1</sub>)</strong><br>
-                                    K2<sub>n + 1</sub> = {{ K2_new }}<br>
-                                    ID = {{ IDS_old }}<br>
-                                    --------------------- <br>
-                                    K2<sub>n + 1</sub> & ID =  <br>
-                                    --------------------- <br>
-                                    K1 = {{ K1 }}<br>
-                                    K2 = {{ K2 }}<br>
-                                    --------------------- <br>
-                                    K1 xor K2 = <br>
+                                    <strong>D = (Rot(Rh(ID), Hw(K1<sub>n+1</sub>)) and
+                                        Rot(Rh(K2<sub>n+1</sub>), Hw(Rh(N2)))) xor IDS</strong><br>
+
+                                    Rot(Rh(ID), Hw(K1<sub>n+1</sub>) = {{ rotrhidshwk1up }}<br>
+                                    Rot(Rh(K2<sub>n+1</sub>), Hw(Rh(N2)) = {{ rotrhk2uphwrhn2 }}<br>
+                                    Rot(Rh(ID), Hw(K1<sub>n+1</sub>) and Rot(Rh(K2<sub>n+1</sub>), Hw(Rh(N2)) = {{ dandval }}<br>
+                                    xor IDS = {{ IDS_old }}<br>
                                     --------------------- <br>
                                     D = {{ D }}
-                                </div><br>
-
-                                <!--<div class="w3-panel w3-pale-green w3-border">
-                                  <p>If match is found then we will move to the Mutual Authentication Phase
-                                  where READER will send messages <strong>A, B, and C</strong></p>
-                                </div>
-                                <div class="w3-panel w3-pale-yellow w3-border">
-                                  <p>If match is not found, session is dropped and READER will scan again</p>
-                                </div>-->
+                                </div> <br>
                         </ol>
                       <h4>READER<-------------------------TAG</h4>
                       <strong>D</strong>
@@ -265,21 +313,20 @@
                 <div class="w3-panel w3-leftbar w3-border-blue w3-text-blue">
                       <h4><strong>IDS and KEY Updating Phase</strong></h4><br>
                         <ol>
-                            <li>READER will send messages <strong>A, B, and C</strong> to TAG</li>
+                            <li>READER will receive <strong>D</strong> value from C then calculate READER's local
+                            value of <strong>D</strong> and compare it to received <strong>D</strong> value.
+                            If match is found, then READER will update Keys.</li>
                             <div class="equations">
-                                <strong>IDS<sub>(n+1)</sub> = (IDS and ID) xor (N2 xor K1<sub>n + 1</sub>)</strong><br>
-                                IDS and ID = <br>
-                                N2 xor K1 =  <br>
-                                --------------------- <br>
+                                <strong>IDS<sub>(n+1)</sub> = Rot(Rh(IDS) xor N2, Hw(N1))</strong><br>
                                 IDS<sub>new</sub> = {{ IDS_new }}<br>
                                 IDS<sub>old</sub> = {{ IDS_old }}<br>
                             </div><br>
                             <div class="equations">
                                 <strong>K1<sub>(n+1)</sub> = K1 xor N2 xor (K3 and ID)</strong><br>
-                                K1<sub>old</sub> =  <br>
-                                K1<sub>new</sub> = <br>
-                                K2<sub>old</sub> =  <br>
-                                K2<sub>new</sub> =  <br>
+                                K1<sub>old</sub> = {{ K1 }} <br>
+                                K1<sub>new</sub> = {{ K1_new }}<br>
+                                K2<sub>old</sub> =  {{ K2 }}<br>
+                                K2<sub>new</sub> =  {{ K2_new }}<br>
                             </div><br>
                         </ol>
                   </div>

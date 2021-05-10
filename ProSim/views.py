@@ -14,7 +14,7 @@ def lmap(request):
 
 
 def sasi(request):
-    print("ProSim urls.py sasi request")
+    print("rciasim urls.py sasi request")
     return render(request, 'sasisim/sasiview.html')
 
 
