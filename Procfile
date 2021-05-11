@@ -1,1 +1,1 @@
-web: gunicorn RFIDProSim.wsgi --log-file -
+web: gunicorn ProSim.wsgi --log-file -
